@@ -2285,7 +2285,7 @@ SQL_TEXT
       'version' => DodontoF::FULL_VERSION_STRING,
       'playRoomMaxNumber' => @config.saveDataMaxCount - 1,
       'warning' => getLoginWarning(),
-      'playRoomGetRangeMax' => $playRoomGetRangeMax,
+      'playRoomGetRangeMax' => @config.numOfPlayRoomsPerGet,
       'allLoginCount' => allLoginCount.to_i,
       'limitLoginCount' => @config.limitLoginCount,
       'loginUserCountList' => loginUserCountList,
