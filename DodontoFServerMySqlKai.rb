@@ -5500,7 +5500,6 @@ SQL_TEXT
     @logger.debug(removeCharacterDataList, "removeCharacterDataList")
     
     changeDb do
-      
       removeCharacterDataList.each do |removeCharacterData|
         @logger.debug(removeCharacterData, "removeCharacterData")
         
@@ -5520,13 +5519,6 @@ SQL_TEXT
                  :where => {"id=? " => imgId} )
       end
     end
-    
-=begin
-    while(graveyard.size > $graveyardLimit)
-      graveyard.shift
-    end
-=end
-  
   end
   
 

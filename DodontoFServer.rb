@@ -5318,10 +5318,10 @@ class DodontoFServer
   def moveCharacterToGraveyard(character, saveData)
     saveData['graveyard'] ||= []
     graveyard = saveData['graveyard']
-    
+
     graveyard << character
-    
-    while(graveyard.size > $graveyardLimit)
+
+    while graveyard.size > @config.graveyardLimit
       graveyard.shift
     end
   end
