@@ -13,6 +13,10 @@ require 'fileutils'
 module DodontoF
   # ユーティリティメソッドのテスト
   class UtilsTest < Test::Unit::TestCase
+    def teardown
+      FileUtils.rm_rf('./.temp')
+    end
+
     # getJsonString は JSON 文字列を返す
     def test_getJsonStringShouldReturnJsonString
       assert_equal('[1,2,3]',
@@ -65,6 +69,24 @@ module DodontoF
       # LanguageKeyはキー値を何らかの形でラップしたものであるはずだから
       # 少なくとも指定したキーとマッチする部分列があるはずだ
       assert_match(/test/, Utils.getLanguageKey('test'))
+    end
+
+    # データサイズの許容判定
+    def test_tooLargeSizeInMb?
+      data = 'a' * 2000
+
+      assert_equal(false, Utils.tooLargeSizeInMb?(data, 0.005),
+                   '許容範囲内の場合')
+      assert_equal(true, Utils.tooLargeSizeInMb?(data, 0.001),
+                   '大きすぎる場合')
+    end
+
+    # ファイルサイズが大きすぎた場合のエラーメッセージ
+    def test_tooLargeSizeMessage
+      assert_equal('ファイルサイズが最大値(10MB)以上のためアップロードに失敗しました。',
+                   Utils.tooLargeFileSizeMessage(10), '10 MB')
+      assert_equal('ファイルサイズが最大値(5MB)以上のためアップロードに失敗しました。',
+                   Utils.tooLargeFileSizeMessage(5), '5 MB')
     end
   end
 end

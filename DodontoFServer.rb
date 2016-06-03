@@ -158,6 +158,10 @@ class DodontoFServer
     return messagePack
   end
 
+  # どどんとふの設定
+  # @return [DodontoF::Config]
+  attr_reader :config
+
   def initialize(config, saveDirInfo, cgiParams)
     @config = config
     @saveDirInfo = saveDirInfo
@@ -2755,23 +2759,6 @@ class DodontoFServer
     end
   end
   
-  
-  def checkFileSizeOnMb(data, size_MB)
-    error = false
-    
-    limit = (size_MB * 1024 * 1024)
-    
-    if( data.size > limit )
-      error = true
-    end
-    
-    if( error )
-      return "ファイルサイズが最大値(#{size_MB}MB)以上のためアップロードに失敗しました。"
-    end
-    
-    return ""
-  end
-  
   def getBotTableInfos()
     @logger.debug("getBotTableInfos Begin")
     result = {
@@ -2993,10 +2980,9 @@ class DodontoFServer
       
       fileData = params['fileData']
       
-      sizeCheckResult = checkFileSizeOnMb(fileData, fileMaxSize)
-      if( sizeCheckResult != "" )
-        result["resultText"] = sizeCheckResult
-        return result;
+      if Utils.tooLargeSizeInMb?(fileData, fileMaxSize)
+        result['resultText'] = Utils.tooLargeFileSizeMessage(fileMaxSize)
+        return result
       end
       
       fileNameOriginal = params['fileName'].toutf8

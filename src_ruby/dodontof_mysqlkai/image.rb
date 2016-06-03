@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 
+require 'dodontof/utils'
+
 module DodontoF_MySqlKai
   # Image情報
   class Image
+    # 画像のファイルサイズが大きすぎる場合に発生するエラーのクラス
+    class ImageFileSizeTooLargeError < StandardError; end
+
     def initialize(server, saveDirInfo)
       @logger = DodontoF::Logger.instance
       @server = server
@@ -132,13 +137,20 @@ module DodontoF_MySqlKai
 
     private
 
+    # コマンドパラメータから画像データを取得する
+    # @param [Hash] params コマンドパラメータ
+    # @param [String] key キー
+    # @return [String] 画像データ
+    # @raise [ImageFileSizeTooLargeError] 画像のファイルサイズが大きすぎる場合
     def getImageDataFromParams(params, key)
-      value = params[key]
+      imageData = params[key]
 
-      sizeCheckResult = @server.checkFileSizeOnMb(value, $UPLOAD_IMAGE_MAX_SIZE)
-      raise sizeCheckResult unless( sizeCheckResult.empty? )
+      sizeLimit = @server.config.uploadImageMaxSize
+      if Utils.tooLargeSizeInMb?(imageData, sizeLimit)
+        raise ImageFileSizeTooLargeError, Utils.tooLargeFileSizeMessage(sizeLimit)
+      end
 
-      return value
+      return imageData
     end
 
     def getImageList()
