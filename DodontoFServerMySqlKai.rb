@@ -2287,7 +2287,7 @@ SQL_TEXT
       "warning" => getLoginWarning(),
       "playRoomGetRangeMax" => $playRoomGetRangeMax,
       "allLoginCount" => allLoginCount.to_i,
-      "limitLoginCount" => $limitLoginCount,
+      "limitLoginCount" => @config.limitLoginCount,
       "loginUserCountList" => loginUserCountList,
       "maxLoginCount" => @config.aboutMaxLoginCount,
       "skinImage" => $skinImage,
