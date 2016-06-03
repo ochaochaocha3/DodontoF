@@ -363,7 +363,7 @@ class DodontoFServer
   end
   
   def isLongChatLog(typeName)
-    return ( $IS_SAVE_LONG_CHAT_LOG and isChatType(typeName) and @lastUpdateTimes[typeName] == 0 )
+    @config.saveLongChatLog && isChatType(typeName) && @lastUpdateTimes[typeName] == 0
   end
   
   def isChatType(typeName)
@@ -3781,25 +3781,24 @@ class DodontoFServer
   end
   
   def sendChatMessageByChatData(chatData)
-    
     chatMessageData = nil
-    
+
     changeSaveData(@saveFiles['chatMessageDataLog']) do |saveData|
       chatMessageDataLog = getChatMessageDataLog(saveData)
-      
+
       deleteOldChatMessageData(chatMessageDataLog);
-      
+
       now = Time.now.to_f
       chatMessageData = [now, chatData]
-      
+
       chatMessageDataLog.push(chatMessageData)
       chatMessageDataLog.sort!
-      
+
       @logger.debug(chatMessageDataLog, "chatMessageDataLog")
       @logger.debug(saveData['chatMessageDataLog'], "saveData['chatMessageDataLog']");
     end
-    
-    if( $IS_SAVE_LONG_CHAT_LOG )
+
+    if @config.saveLongChatLog
       saveAllChatMessage(chatMessageData)
     end
   end
