@@ -1778,7 +1778,7 @@ class DodontoFServer
   
   def refreshLoop(saveData)
     now = Time.now
-    whileLimitTime = now + $refreshTimeout
+    whileLimitTime = now + @config.refreshTimeout
     
     @logger.debug(now, "now")
     @logger.debug(whileLimitTime, "whileLimitTime")
@@ -2033,7 +2033,7 @@ class DodontoFServer
       "cardInfos" => cardInfos,
       "isDiceBotOn" => $isDiceBotOn,
       "uniqueId" => uniqueId,
-      "refreshTimeout" => $refreshTimeout,
+      "refreshTimeout" => @config.refreshTimeout,
       "refreshInterval" => getRefreshInterval(),
       "isCommet" => $isCommet,
       "version" => DodontoF::FULL_VERSION_STRING,
