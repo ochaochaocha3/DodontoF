@@ -1187,7 +1187,7 @@ class DodontoFServer
   def getBusyInfo()
     jsonData = {
       "loginCount" => File.readlines($loginCountFileFullPath).join.to_i,
-      "maxLoginCount" => $aboutMaxLoginCount,
+      "maxLoginCount" => @config.aboutMaxLoginCount,
       "version" => DodontoF::FULL_VERSION_STRING,
       "result" => 'OK',
     }
@@ -2043,7 +2043,7 @@ class DodontoFServer
       "allLoginCount" => allLoginCount.to_i,
       "limitLoginCount" => $limitLoginCount,
       "loginUserCountList" => loginUserCountList,
-      "maxLoginCount" => $aboutMaxLoginCount.to_i,
+      "maxLoginCount" => @config.aboutMaxLoginCount,
       "skinImage" => $skinImage,
       "isPaformanceMonitor" => $isPaformanceMonitor,
       "fps" => $fps,

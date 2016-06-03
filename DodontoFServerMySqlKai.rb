@@ -1419,7 +1419,7 @@ SQL_TEXT
   def getBusyInfo()
     jsonData = {
       "loginCount" => getLoginCount(),
-      "maxLoginCount" => $aboutMaxLoginCount,
+      "maxLoginCount" => @config.aboutMaxLoginCount,
       "version" => DodontoF::FULL_VERSION_STRING,
       "result" => 'OK',
     }
@@ -2289,7 +2289,7 @@ SQL_TEXT
       "allLoginCount" => allLoginCount.to_i,
       "limitLoginCount" => $limitLoginCount,
       "loginUserCountList" => loginUserCountList,
-      "maxLoginCount" => $aboutMaxLoginCount.to_i,
+      "maxLoginCount" => @config.aboutMaxLoginCount,
       "skinImage" => $skinImage,
       "isPaformanceMonitor" => $isPaformanceMonitor,
       "fps" => $fps,
