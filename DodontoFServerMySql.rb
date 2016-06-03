@@ -18,7 +18,11 @@ end
 class SaveDataManagerOnMySql
   include DodontoF::Utils
 
-  def initialize
+  # コンストラクタ
+  # @param [DodontoF::Config] config どどんとふの設定
+  def initialize(config)
+    @config = config
+
     @tableLocked = false
     @db = nil
 
@@ -192,7 +196,7 @@ class SaveDataManagerOnMySql
     
     maxTime = 0
     
-    numberLimit = $chatMessageDataLogAllLineMax
+    numberLimit = @config.longChatLogMaxLines
     result = executeSql("SELECT MAX(time) FROM #{tableName} WHERE number<#{numberLimit}")
     result.each do |row|
       maxTime = row.first.to_f
@@ -318,7 +322,7 @@ SQL
   def createChatTableInstance(tableName)
     @logger.debug(tableName, "createChatTableInstance tableName")
     
-    numberLimit = $chatMessageDataLogAllLineMax
+    numberLimit = @config.longChatLogMaxLines
     @logger.debug(numberLimit, "createChatTableInstance numberLimit")
     
     maxNumber = executeMaxSql(tableName, "number")
@@ -472,11 +476,10 @@ SQL
     
     isReadOnly = false
     open(nil, isReadOnly, tableName) do
-      
       time = getCurrentTime
       text = getJsonString([time, chatMessageData])
       
-      numberLimit = $chatMessageDataLogAllLineMax
+      numberLimit = @config.longChatLogMaxLines
       oldestNumber = 0
       result = executeSql("SELECT number FROM #{tableName} WHERE number<#{numberLimit} ORDER BY time limit 1")
       result.each do |row|
@@ -486,7 +489,6 @@ SQL
       @logger.debug(oldestNumber, "oldestNumber")
       
       executeSql("UPDATE #{tableName} SET text=?,time=? WHERE (number=#{oldestNumber})", text, time);
-                 
     end
     
   end
@@ -499,10 +501,9 @@ SQL
     tableName = getChatTableName(dirName)
     createChatTable(tableName)
     
-    numberLimit = $chatMessageDataLogAllLineMax
+    numberLimit = @config.longChatLogMaxLines
     
     (0 ... numberLimit).each do |number|
-      
       count = executeCountSql("SELECT count(*) FROM #{tableName} WHERE (number=?)", number);
       next if( count == 0 )
       
@@ -763,7 +764,7 @@ end
 
 
 def mainMySql(config, cgiParams)
-  saveDataManager = SaveDataManagerOnMySql.new
+  saveDataManager = SaveDataManagerOnMySql.new(config)
 
   begin
     FileLockMySql.setSaveDataManager(saveDataManager)

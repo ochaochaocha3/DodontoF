@@ -3865,7 +3865,6 @@ class DodontoFServer
     
     locker = getSaveFileLock(saveFileName)
     locker.lock do 
-      
       lines = []
       if( isExist?(saveFileName) )
         lines = readLines(saveFileName)
@@ -3873,13 +3872,12 @@ class DodontoFServer
       lines << getJsonString(chatMessageData)
       lines << "\n"
       
-      while( lines.size > $chatMessageDataLogAllLineMax )
+      while lines.size > @config.longChatLogMaxLines
         lines.shift
       end
       
       createFile(saveFileName, lines.join())
     end
-    
   end
   
   def changeMap()

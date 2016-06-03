@@ -4071,17 +4071,14 @@ SQL_TEXT
 #FIXME  
 # $oldMessageTimeout は不要になりました。
   def deleteOldChatMessageData()
-    
-    result = readDb( "SELECT COUNT(*)",
-                     :from => "chats" )
+    result = readDb("SELECT COUNT(*)",
+                    :from => "chats")
     row = result.first
     count = row['COUNT(*)']
     @logger.debug(count, "chats count")
     
-    limit = $chatMessageDataLogAllLineMax
-    limitMax = limit * 2
-    
-    if( count < limitMax )
+    limitMax = @config.longChatLogMaxLines * 2
+    if count < limitMax
       @logger.debug('chats count is NOT limit.')
       return
     end
