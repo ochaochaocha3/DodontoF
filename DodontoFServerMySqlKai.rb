@@ -196,7 +196,7 @@ class DodontoFServer_MySqlKai
   end
   
   def initSaveFiles(roomNumber)
-    @saveDirInfo.init(roomNumber, $saveDataMaxCount, $SAVE_DATA_DIR)
+    @saveDirInfo.init(roomNumber, @config.saveDataMaxCount, $SAVE_DATA_DIR)
   end
 
   # CGI のクエリ文字列から指定したキーの値を取得する
@@ -1443,39 +1443,39 @@ SQL_TEXT
   end
   
   
-  def getWebIfServerInfo()
+  def getWebIfServerInfo
     jsonData = {
-      "maxRoom" => ($saveDataMaxCount - 1),
+      'maxRoom' => @config.saveDataMaxCount - 1,
       'isNeedCreatePassword' => (not $createPlayRoomPassword.empty?),
       'result' => 'OK',
     }
-    
-    if( getWebIfRequestBoolean("card", false) )
+
+    if getWebIfRequestBoolean('card', false)
       cardInfos = getCardsInfo.collectCardTypeAndTypeName($cardOrder)
-      jsonData["cardInfos"] = cardInfos
+      jsonData['cardInfos'] = cardInfos
     end
-    
-    if( getWebIfRequestBoolean("dice", false) )
-      jsonData['diceBotInfos'] = getDiceBotInfos()
+
+    if getWebIfRequestBoolean('dice', false)
+      jsonData['diceBotInfos'] = getDiceBotInfos
     end
-    
+
     return jsonData
   end
 
-  def getWebIfRoomList()
-    @logger.debug("getWebIfRoomList Begin")
+  def getWebIfRoomList
+    @logger.debug('getWebIfRoomList Begin')
     minRoom = getWebIfRequestInt('minRoom', 0)
-    maxRoom = getWebIfRequestInt('maxRoom', ($saveDataMaxCount - 1))
+    maxRoom = getWebIfRequestInt('maxRoom', @config.saveDataMaxCount - 1)
 
-    room = DodontoF_MySqlKai::PlayRoom.new(self, @saveDirInfo)
+    room = DodontoF::PlayRoom.new(self, @saveDirInfo)
     playRoomStates = room.getStates(minRoom, maxRoom)
 
     jsonData = {
-      "playRoomStates" => playRoomStates,
-      "result" => 'OK',
+      'playRoomStates' => playRoomStates,
+      'result' => 'OK',
     }
 
-    @logger.debug("getWebIfRoomList End")
+    @logger.debug('getWebIfRoomList End')
     return jsonData
   end
 
@@ -2230,7 +2230,7 @@ SQL_TEXT
   end
   
   def getFamousGames
-    roomNumberRange = (0 .. $saveDataMaxCount)
+    roomNumberRange = (0 .. @config.saveDataMaxCount)
     gameTypeList = getGameTypeList( roomNumberRange )
     
     counts = {}
@@ -2275,31 +2275,31 @@ SQL_TEXT
     diceBotInfos = getDiceBotInfos()
     
     result = {
-      "loginMessage" => loginMessage,
-      "cardInfos" => cardInfos,
-      "isDiceBotOn" => $isDiceBotOn,
-      "uniqueId" => uniqueId,
-      "refreshTimeout" => @config.refreshTimeout,
-      "refreshInterval" => getRefreshInterval(),
-      "isCommet" => $isCommet,
-      "version" => DodontoF::FULL_VERSION_STRING,
-      "playRoomMaxNumber" => ($saveDataMaxCount - 1),
-      "warning" => getLoginWarning(),
-      "playRoomGetRangeMax" => $playRoomGetRangeMax,
-      "allLoginCount" => allLoginCount.to_i,
-      "limitLoginCount" => @config.limitLoginCount,
-      "loginUserCountList" => loginUserCountList,
-      "maxLoginCount" => @config.aboutMaxLoginCount,
-      "skinImage" => $skinImage,
-      "isPaformanceMonitor" => $isPaformanceMonitor,
-      "fps" => $fps,
-      "loginTimeLimitSecond" => $loginTimeLimitSecond,
-      "removeOldPlayRoomLimitDays" => $removeOldPlayRoomLimitDays,
-      "canTalk" => $canTalk,
-      "retryCountLimit" => $retryCountLimit,
-      "imageUploadDirInfo" => {$localUploadDirMarker => $imageUploadDir},
-      "mapMaxWidth" => $mapMaxWidth,
-      "mapMaxHeigth" => $mapMaxHeigth,
+      'loginMessage' => loginMessage,
+      'cardInfos' => cardInfos,
+      'isDiceBotOn' => $isDiceBotOn,
+      'uniqueId' => uniqueId,
+      'refreshTimeout' => @config.refreshTimeout,
+      'refreshInterval' => getRefreshInterval(),
+      'isCommet' => $isCommet,
+      'version' => DodontoF::FULL_VERSION_STRING,
+      'playRoomMaxNumber' => @config.saveDataMaxCount - 1,
+      'warning' => getLoginWarning(),
+      'playRoomGetRangeMax' => $playRoomGetRangeMax,
+      'allLoginCount' => allLoginCount.to_i,
+      'limitLoginCount' => @config.limitLoginCount,
+      'loginUserCountList' => loginUserCountList,
+      'maxLoginCount' => @config.aboutMaxLoginCount,
+      'skinImage' => $skinImage,
+      'isPaformanceMonitor' => $isPaformanceMonitor,
+      'fps' => $fps,
+      'loginTimeLimitSecond' => $loginTimeLimitSecond,
+      'removeOldPlayRoomLimitDays' => $removeOldPlayRoomLimitDays,
+      'canTalk' => $canTalk,
+      'retryCountLimit' => $retryCountLimit,
+      'imageUploadDirInfo' => {$localUploadDirMarker => $imageUploadDir},
+      'mapMaxWidth' => $mapMaxWidth,
+      'mapMaxHeigth' => $mapMaxHeigth,
       'diceBotInfos' => diceBotInfos,
       'isNeedCreatePassword' => (not $createPlayRoomPassword.empty?),
       'defaultUserNames' => $defaultUserNames,
@@ -3994,7 +3994,7 @@ SQL_TEXT
     
     rooms = []
     
-    $saveDataMaxCount.times do |roomNumber|
+    @config.saveDataMaxCount.times do |roomNumber|
       @logger.debug(roomNumber, "loop roomNumber")
       
       initSaveFiles(roomNumber)
