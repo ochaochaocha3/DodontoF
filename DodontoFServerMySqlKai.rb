@@ -3069,8 +3069,9 @@ SQL_TEXT
     return result
   end
   
-  def uploadReplayData()
-    uploadFileBase($replayDataUploadDir, $UPLOAD_REPALY_DATA_MAX_SIZE) do |fileNameFullPath, fileNameOriginal, result|
+  # リプレイデータをアップロードする
+  def uploadReplayData
+    uploadFileBase($replayDataUploadDir, @config.uploadRepalyDataMaxSize) do |fileNameFullPath, fileNameOriginal, result|
       @logger.debug("uploadReplayData yield Begin")
       
       params = getParamsFromRequestData()
