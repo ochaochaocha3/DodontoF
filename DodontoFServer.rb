@@ -1138,7 +1138,7 @@ class DodontoFServer
     when "all"
       return 0
     when nil
-      return Time.now.to_i - $oldMessageTimeout
+      return Time.now.to_i - @config.oldMessageTimeout
     end
     
     return Time.now.to_i - seconds.to_i
@@ -3808,10 +3808,10 @@ class DodontoFServer
     now = Time.now.to_f
     
     chatMessageDataLog.delete_if do |chatMessageData|
-      writtenTime, = chatMessageData
+      writtenTime, _ = chatMessageData
       timeDiff = now - writtenTime
       
-      ( timeDiff > ($oldMessageTimeout) )
+      timeDiff > @config.oldMessageTimeout
     end
   end
   
