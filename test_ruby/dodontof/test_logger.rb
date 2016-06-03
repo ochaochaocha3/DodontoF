@@ -8,17 +8,24 @@ require 'test/unit'
 require 'stringio'
 require 'logger'
 
+require 'dodontof/config'
 require 'dodontof/logger'
 
 module DodontoF
   # どどんとふ共通ロガーのテスト
   class LoggerTest < Test::Unit::TestCase
+    LOG_FILE_MAX_COUNT = 0
+    LOG_FILE_MAX_SIZE = 4096
+
     def setup
-      $logFileName = STDOUT
-      $logFileMaxCount = 0
-      $logFileMaxSize = 4096
+      config = Config.new
+      config.logFileName = STDOUT
+      config.logFileMaxCount = LOG_FILE_MAX_COUNT
+      config.logFileMaxSize = 4096
+      Logger.config = config
 
       @logger = Logger.instance
+      @logger.reset(STDOUT, LOG_FILE_MAX_COUNT, LOG_FILE_MAX_SIZE)
     end
 
     # mod_ruby 使用時はログレベルが FATAL になる
@@ -148,14 +155,14 @@ module DodontoF
     # デバッグモード用ロガーを準備する
     def initLoggerWithDebugLevel(io)
       @logger.
-        reset(io).
+        reset(io, LOG_FILE_MAX_COUNT, LOG_FILE_MAX_SIZE).
         updateLevel(false, true)
     end
 
     # 非デバッグモード用ロガーを準備する
     def initLoggerWithErrorLevel(io)
       @logger.
-        reset(io).
+        reset(io, LOG_FILE_MAX_COUNT, LOG_FILE_MAX_SIZE).
         updateLevel(false, false)
     end
   end

@@ -5986,20 +5986,22 @@ end
 
 
 def executeDodontoServerCgi()
+  config = DodontoF::Config.fromGlobalVars
+  DodontoF::Logger.config = config
+
   cgiParams = getCgiParams()
-  
+
   case $dbType
   when "mysql"
     #mod_ruby でも再読み込みするようにloadに
     require 'DodontoFServerMySql.rb'
-    mainMySql(cgiParams)
+    mainMySql(config, cgiParams)
   else
     #通常のテキストファイル形式
-    main(cgiParams)
+    main(config, cgiParams)
   end
-  
 end
-  
-if( $0 === __FILE__ )
-  executeDodontoServerCgi()
+
+if $0 == __FILE__
+  executeDodontoServerCgi
 end

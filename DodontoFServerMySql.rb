@@ -762,7 +762,7 @@ class DodontoFServer_MySql < DodontoFServer
 end
 
 
-def mainMySql(cgiParams)
+def mainMySql(config, cgiParams)
   saveDataManager = SaveDataManagerOnMySql.new
 
   begin
@@ -770,7 +770,6 @@ def mainMySql(cgiParams)
     MySqlAccesser.setSaveDataManager(saveDataManager)
     SaveDirInfoMySql.setSaveDataManager(saveDataManager)
 
-    config = DodontoF::Config.fromGlobalVars
     server = DodontoFServer_MySql.new(config, SaveDirInfoMySql.new(), cgiParams)
 
     printResult(server)
@@ -781,8 +780,11 @@ end
 
 
 
-if( $0 === __FILE__ )
-  cgiParams = getCgiParams()
-  
-  mainMySql(cgiParams)
+if $0 == __FILE__
+  config = DodontoF::Config.fromGlobalVars
+  DodontoF::Logger.config = config
+
+  cgiParams = getCgiParams
+
+  mainMySql(config, cgiParams)
 end

@@ -9,11 +9,14 @@ require 'test/unit'
 require 'test/unit/assertions/assert_have_keys'
 
 require 'dodontof/config'
+require 'dodontof/logger'
 
 # テスト用のコンフィグファイルをDodontoFServerに読みこませる
 $isTestMode = true
 require 'DodontoFServer.rb'
 require 'server_test_impl.rb'
+
+DodontoF::Logger.config = DodontoF::Config.fromGlobalVars
 
 class DodontoFServerTest < Test::Unit::TestCase
   include DodontoFServerTestImpl

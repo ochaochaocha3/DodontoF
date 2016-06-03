@@ -9,10 +9,34 @@ module DodontoF
   class Logger
     include Singleton
 
+    # 標準ログデバイス
+    # 事故で CGI 出力を汚さないように標準エラー出力にする
+    DEFAULT_LOGDEV = $stderr
+    # 標準ログ保持数
+    DEFAULT_SHIFT_AGE = 0
+    # 標準ログファイルサイズ
+    DEFAULT_SHIFT_SIZE = 4096
+
+    # どどんとふの設定
+    @@config = nil
+
+    # どどんとふの設定を使うよう設定する
+    # @param [DodontoF::Config] config 使用する設定
+    def self.config=(config)
+      @@config = config
+    end
+
     # コンストラクタ
     def initialize
-      reset
-      updateLevel
+      if @@config
+        reset(@@config.logFileName,
+              @@config.logFileMaxCount,
+              @@config.logFileMaxSize)
+        updateLevel(@@config.modRuby, @@config.debugLog)
+      else
+        reset(DEFAULT_LOGDEV, DEFAULT_SHIFT_AGE, DEFAULT_SHIFT_SIZE)
+        updateLevel(false, false)
+      end
     end
 
     # ロガーを作り直す
@@ -21,9 +45,7 @@ module DodontoF
     #   またはローテーション頻度
     # @param [Integer] shiftSize 最大ログファイルサイズ
     # @return [self]
-    def reset(logdev = $logFileName,
-              shiftAge = $logFileMaxCount,
-              shiftSize = $logFileMaxSize)
+    def reset(logdev, shiftAge, shiftSize)
       @logger = ::Logger.new(logdev, shiftAge, shiftSize)
       self
     end
@@ -37,8 +59,7 @@ module DodontoF
     # @param [Boolean] modRuby modRuby を使用しているかどうか
     # @param [Boolean] debug デバッグログ出力を行うかどうか
     # @return [self]
-    def updateLevel(modRuby = $isModRuby,
-                    debug = $debug)
+    def updateLevel(modRuby, debug)
       @logger.level =
         if modRuby
           ::Logger::FATAL
