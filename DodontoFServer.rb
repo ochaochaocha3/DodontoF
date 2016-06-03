@@ -22,6 +22,7 @@ require 'uri'
 require 'fileutils'
 
 require 'dodontof/version'
+require 'dodontof/config'
 require 'dodontof/logger'
 require 'dodontof/utils'
 require 'dodontof/dice_adapter'
@@ -157,9 +158,10 @@ class DodontoFServer
     return messagePack
   end
 
-  def initialize(saveDirInfo, cgiParams)
-    @cgiParams = cgiParams
+  def initialize(config, saveDirInfo, cgiParams)
+    @config = config
     @saveDirInfo = saveDirInfo
+    @cgiParams = cgiParams
 
     @logger = DodontoF::Logger.instance
 
@@ -5707,9 +5709,10 @@ end
 
 def main(cgiParams)
   logger = DodontoF::Logger.instance
+  config = DodontoF::Config.fromGlobalVars
 
   logger.debug("main called")
-  server = DodontoFServer.new(SaveDirInfo.new(), cgiParams)
+  server = DodontoFServer.new(config, SaveDirInfo.new(), cgiParams)
   logger.debug("server created")
   printResult(server)
   logger.debug("printResult called")

@@ -25,6 +25,7 @@ require 'json/jsonParser'
 
 require 'mysql'
 
+require 'dodontof/config'
 require 'dodontof/version'
 require 'dodontof/logger'
 require 'dodontof/utils'
@@ -167,9 +168,10 @@ class DodontoFServer_MySqlKai
     return messagePack
   end
   
-  def initialize(saveDirInfo, cgiParams)
-    @cgiParams = cgiParams
+  def initialize(config, saveDirInfo, cgiParams)
+    @config = config
     @saveDirInfo = saveDirInfo
+    @cgiParams = cgiParams
 
     @logger = DodontoF::Logger.instance
 
@@ -5873,10 +5875,11 @@ end
 
 
 def main(cgiParams)
+  config = DodontoF::Config.fromGlobalVars
   logger = DodontoF::Logger.instance
 
   logger.debug("main called")
-  server = DodontoFServer_MySqlKai.new(SaveDirInfo.new(), cgiParams)
+  server = DodontoFServer_MySqlKai.new(config, SaveDirInfo.new(), cgiParams)
   logger.debug("server created")
   printResult(server)
   logger.debug("printResult called")

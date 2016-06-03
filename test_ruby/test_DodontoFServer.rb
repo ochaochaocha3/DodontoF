@@ -8,6 +8,8 @@ require 'test_helper'
 require 'test/unit'
 require 'test/unit/assertions/assert_have_keys'
 
+require 'dodontof/config'
+
 # テスト用のコンフィグファイルをDodontoFServerに読みこませる
 $isTestMode = true
 require 'DodontoFServer.rb'
@@ -36,7 +38,7 @@ class DodontoFServerTest < Test::Unit::TestCase
         'viewStates' => {}
       }
     }
-    server = getDodontoFServerForTest.new(SaveDirInfo.new, params)
+    server = getDodontoFServerForTest.new(DodontoF::Config.fromGlobalVars, SaveDirInfo.new, params)
     server.getResponse
   end
 
@@ -65,7 +67,7 @@ class DodontoFServerTest < Test::Unit::TestCase
 
     createMockPlayRoom('TESTROOM_ALPHA', 1)
     createMockPlayRoom('TESTROOM_BETA', 5)
-    server = getDodontoFServerForTest.new(SaveDirInfo.new, params)
+    server = getDodontoFServerForTest.new(DodontoF::Config.fromGlobalVars, SaveDirInfo.new, params)
     result = server.getResponse
     parsed = JsonParser.parse(result)
 
@@ -107,7 +109,7 @@ class DodontoFServerTest < Test::Unit::TestCase
       }
     }
 
-    server = getDodontoFServerForTest.new(SaveDirInfo.new, params)
+    server = getDodontoFServerForTest.new(DodontoF::Config.fromGlobalVars, SaveDirInfo.new, params)
     result = server.getResponse
     parsed = JsonParser.parse(result)
 
@@ -140,7 +142,7 @@ class DodontoFServerTest < Test::Unit::TestCase
     }
 
     createMockPlayRoom('TESTROOM', 1)
-    server = getDodontoFServerForTest.new(SaveDirInfo.new, params)
+    server = getDodontoFServerForTest.new(DodontoF::Config.fromGlobalVars, SaveDirInfo.new, params)
     result = server.getResponse
     parsed = JsonParser.parse(result)
 
@@ -161,7 +163,7 @@ class DodontoFServerTest < Test::Unit::TestCase
 
     createMockPlayRoom('TESTROOM2', 2) # テスト中作って10秒立たないからこれは消せないはず
 
-    server = getDodontoFServerForTest.new(SaveDirInfo.new, params)
+    server = getDodontoFServerForTest.new(DodontoF::Config.fromGlobalVars, SaveDirInfo.new, params)
     result = server.getResponse
     parsed = JsonParser.parse(result)
 
@@ -208,7 +210,7 @@ class DodontoFServerTest < Test::Unit::TestCase
     createMockPlayRoom('TESTROOM1', 1)
     createMockPlayRoom('TESTROOM2', 2)
 
-    server = getDodontoFServerForTest.new(
+    server = getDodontoFServerForTest.new(DodontoF::Config.fromGlobalVars,
       newSaveDirInfoForRemoveOldPlayRoom, params
     )
     result = server.getResponse
@@ -236,7 +238,7 @@ class DodontoFServerTest < Test::Unit::TestCase
       'params' => {}
     }
 
-    server = getDodontoFServerForTest.new(SaveDirInfo.new, params)
+    server = getDodontoFServerForTest.new(DodontoF::Config.fromGlobalVars, SaveDirInfo.new, params)
     result = server.getResponse
     parsed = JsonParser.parse(result)
     assert_operator(1, :<=,  parsed.size)
@@ -259,7 +261,7 @@ class DodontoFServerTest < Test::Unit::TestCase
       'params' => {}
     }
 
-    server = getDodontoFServerForTest.new(SaveDirInfo.new, params)
+    server = getDodontoFServerForTest.new(DodontoF::Config.fromGlobalVars, SaveDirInfo.new, params)
     result = server.getResponse
     parsed = JsonParser.parse(result)
 
@@ -279,7 +281,7 @@ class DodontoFServerTest < Test::Unit::TestCase
         'table' => []
       }
     }
-    server = getDodontoFServerForTest.new(SaveDirInfo.new, params)
+    server = getDodontoFServerForTest.new(DodontoF::Config.fromGlobalVars, SaveDirInfo.new, params)
     server.getResponse
   end
 
@@ -328,7 +330,7 @@ class DodontoFServerTest < Test::Unit::TestCase
 
     createMockBotTable('TEST')
 
-    server = getDodontoFServerForTest.new(SaveDirInfo.new, params)
+    server = getDodontoFServerForTest.new(DodontoF::Config.fromGlobalVars, SaveDirInfo.new, params)
     result = server.getResponse
     parsed = JsonParser.parse(result)
 
@@ -376,7 +378,7 @@ class DodontoFServerTest < Test::Unit::TestCase
 
     createMockBotTable('TEST')
 
-    server = getDodontoFServerForTest.new(SaveDirInfo.new, params)
+    server = getDodontoFServerForTest.new(DodontoF::Config.fromGlobalVars, SaveDirInfo.new, params)
     result = server.getResponse
     parsed = JsonParser.parse(result)
 
@@ -407,7 +409,7 @@ class DodontoFServerTest < Test::Unit::TestCase
     # 後でファイル変更を検知するため引っ張り出しておく
     image_paths = Dir.glob('.temp/imageUploadSpace/*.png').to_a
 
-    server = getDodontoFServerForTest.new(SaveDirInfo.new, params)
+    server = getDodontoFServerForTest.new(DodontoF::Config.fromGlobalVars, SaveDirInfo.new, params)
     response = server.getResponse
 
     # テスト中にしても、このやり方で画像をさがすのは
@@ -430,7 +432,7 @@ class DodontoFServerTest < Test::Unit::TestCase
       'params' => { }
     }
 
-    server = getDodontoFServerForTest.new(SaveDirInfo.new, params)
+    server = getDodontoFServerForTest.new(DodontoF::Config.fromGlobalVars, SaveDirInfo.new, params)
     result = server.getResponse
     parsed = JsonParser.parse(result)
   end
@@ -457,7 +459,7 @@ class DodontoFServerTest < Test::Unit::TestCase
       }
     }
 
-    server = getDodontoFServerForTest.new(SaveDirInfo.new, params)
+    server = getDodontoFServerForTest.new(DodontoF::Config.fromGlobalVars, SaveDirInfo.new, params)
     result = server.getResponse
     parsed = JsonParser.parse(result)
 
@@ -475,7 +477,7 @@ class DodontoFServerTest < Test::Unit::TestCase
       }
     }
 
-    server = getDodontoFServerForTest.new(SaveDirInfo.new, params)
+    server = getDodontoFServerForTest.new(DodontoF::Config.fromGlobalVars, SaveDirInfo.new, params)
     result = server.getResponse
     parsed = JsonParser.parse(result)
 
@@ -512,7 +514,7 @@ class DodontoFServerTest < Test::Unit::TestCase
       }
     }
 
-    server = getDodontoFServerForTest.new(SaveDirInfo.new, params)
+    server = getDodontoFServerForTest.new(DodontoF::Config.fromGlobalVars, SaveDirInfo.new, params)
     result = server.getResponse
     parsed = JsonParser.parse(result)
 
@@ -534,7 +536,7 @@ class DodontoFServerTest < Test::Unit::TestCase
       'params' => { }
     }
 
-    server = getDodontoFServerForTest.new(SaveDirInfo.new, params)
+    server = getDodontoFServerForTest.new(DodontoF::Config.fromGlobalVars, SaveDirInfo.new, params)
     result = server.getResponse
     parsed = JsonParser.parse(result)
 
@@ -588,7 +590,7 @@ class DodontoFServerTest < Test::Unit::TestCase
     }
 
     $isMentenanceNow = true
-    server = getDodontoFServerForTest.new(SaveDirInfo.new, params)
+    server = getDodontoFServerForTest.new(DodontoF::Config.fromGlobalVars, SaveDirInfo.new, params)
     result = server.getResponse
     parsed = JsonParser.parse(result)
     assert_have_keys(parsed['warning'], 'key')
@@ -604,7 +606,7 @@ class DodontoFServerTest < Test::Unit::TestCase
     }
 
     info = SaveDirInfo.new
-    server = getDodontoFServerForTest.new(info, params)
+    server = getDodontoFServerForTest.new(DodontoF::Config.fromGlobalVars, info, params)
     image = DodontoF::Image.new(server, info)
     target = image.getSmallImageDir
     FileUtils.rm_r(target)

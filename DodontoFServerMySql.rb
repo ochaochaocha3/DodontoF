@@ -7,6 +7,7 @@ require 'DodontoFServer.rb'
 #require 'rubygems'
 require 'mysql'
 
+require 'dodontof/config'
 require 'dodontof/logger'
 require 'dodontof/utils'
 
@@ -762,16 +763,16 @@ end
 
 
 def mainMySql(cgiParams)
-  
   saveDataManager = SaveDataManagerOnMySql.new
-  
+
   begin
     FileLockMySql.setSaveDataManager(saveDataManager)
     MySqlAccesser.setSaveDataManager(saveDataManager)
     SaveDirInfoMySql.setSaveDataManager(saveDataManager)
-    
-    server = DodontoFServer_MySql.new(SaveDirInfoMySql.new(), cgiParams)
-    
+
+    config = DodontoF::Config.fromGlobalVars
+    server = DodontoFServer_MySql.new(config, SaveDirInfoMySql.new(), cgiParams)
+
     printResult(server)
   ensure
     saveDataManager.closeDb

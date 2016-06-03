@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 require 'fileutils'
+require 'dodontof/config'
 
 # 3種類あるサーバ実装を統一的に検査するためのテスト実装モジュール
 # それぞれのサーバ用のテストケースでincludeして使います。
@@ -29,7 +30,9 @@ module DodontoFServerTestImpl
   end
 
   def test_response
-    instance = getDodontoFServerForTest.new(SaveDirInfo.new, { 'cmd' => '' })
+    instance = getDodontoFServerForTest.new(
+      DodontoF::Config.fromGlobalVars, SaveDirInfo.new, { 'cmd' => '' }
+    )
     assert_match(/「.+」の動作環境は正常に起動しています。/, instance.getResponse)
   end
 
