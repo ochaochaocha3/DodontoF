@@ -2004,7 +2004,7 @@ SQL_TEXT
   
   def getRefreshInterval
     if( $isCommet )
-      $refreshInterval
+      @config.refreshInterval
     else
       $refreshIntervalForNotCommet
     end

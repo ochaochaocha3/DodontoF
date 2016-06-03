@@ -1798,7 +1798,7 @@ class DodontoFServer
   
   def getRefreshInterval
     if( $isCommet )
-      $refreshInterval
+      @config.refreshInterval
     else
       $refreshIntervalForNotCommet
     end
