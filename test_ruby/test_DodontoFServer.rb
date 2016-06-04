@@ -405,7 +405,7 @@ class DodontoFServerTest < Test::Unit::TestCase
     }
 
     # 後でファイル変更を検知するため引っ張り出しておく
-    image_paths = Dir.glob('.temp/imageUploadSpace/*.png').to_a
+    image_paths = Dir.glob("#{$TEST_TEMP_ROOT}/imageUploadSpace/*.png").to_a
 
     server = getDodontoFServerForTest.new(SaveDirInfo.new, params)
     response = server.getResponse
@@ -413,7 +413,7 @@ class DodontoFServerTest < Test::Unit::TestCase
     # テスト中にしても、このやり方で画像をさがすのは
     # あんまり望ましくない気はするのでもっとよいやり方があれば変更する
     # TODO: create_mock_imageから差分式の画像アップロード先検出を削除する
-    diff_paths = Dir.glob('.temp/imageUploadSpace/*.png').to_a - image_paths
+    diff_paths = Dir.glob("#{$TEST_TEMP_ROOT}/imageUploadSpace/*.png").to_a - image_paths
 
     # 変なことにならないようにテストしておく
     assert_equal(1, diff_paths.size)

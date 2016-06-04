@@ -2,6 +2,9 @@
 
 require 'fileutils'
 
+# テスト時の一時ディレクトリのルート
+$TEST_TEMP_ROOT = File.expand_path('.temp', File.dirname(__FILE__))
+
 # 3種類あるサーバ実装を統一的に検査するためのテスト実装モジュール
 # それぞれのサーバ用のテストケースでincludeして使います。
 # 共通するテストはこのクラスの中で書いてしまってください。
@@ -16,16 +19,16 @@ module DodontoFServerTestImpl
     # $imageUploadDir の初期状態を保存したディレクトリ
     initial_image_upload_dir = 'imageUploadSpace'
 
-    FileUtils.mkdir_p $SAVE_DATA_DIR
-    FileUtils.cp_r initial_image_upload_dir, $imageUploadDir
-    FileUtils.mkdir_p $replayDataUploadDir
-    FileUtils.mkdir_p $saveDataTempDir
-    FileUtils.mkdir_p $fileUploadDir
-    FileUtils.cp_r 'saveData', File.join($SAVE_DATA_DIR, 'saveData')
+    FileUtils.mkdir_p($SAVE_DATA_DIR)
+    FileUtils.cp_r(initial_image_upload_dir, $imageUploadDir)
+    FileUtils.mkdir_p($replayDataUploadDir)
+    FileUtils.mkdir_p($saveDataTempDir)
+    FileUtils.mkdir_p($fileUploadDir)
+    FileUtils.cp_r('saveData', File.join($SAVE_DATA_DIR, 'saveData'))
   end
 
   def teardown
-    FileUtils.rm_r('.temp')
+    FileUtils.rm_r($TEST_TEMP_ROOT)
   end
 
   def test_response
