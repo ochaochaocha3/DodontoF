@@ -53,7 +53,7 @@ class CGIRequestTest < Test::Unit::TestCase
     $stdout = @prevStdout
 
     # ファイルの削除
-    FileUtils.rm_r('.temp')
+    FileUtils.rm_r($TEST_TEMP_ROOT)
   end
 
   # コマンドを指定せずに GET した場合
