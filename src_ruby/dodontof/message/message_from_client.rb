@@ -14,19 +14,18 @@ module DodontoF
         # 仮引数の Hash を破壊しないように複製する
         messageData = hash.dup
 
-        message = self.new
-
-        message.commandName = messageData['cmd']
+        commandName = messageData['cmd']
         messageData.delete('cmd')
 
-        # 残りはコマンドの引数
-        message.args = messageData
-
-        message
+        new(commandName, messageData)
       end
 
-      def initialize
-        super
+      # コンストラクタ
+      # @param [String] commandName コマンド名
+      # @param [Hash] args コマンドの引数
+      def initialize(commandName, args)
+        @commandName = commandName
+        @args = args
       end
 
       # CGI 広告埋め込み対策のマーカーを追加するか？

@@ -9,11 +9,11 @@ module DodontoF
     class MessageFromWebIf < AbstractMessage
       # JSONP のコールバック関数名
       # @return [String, nil]
-      attr_accessor :jsonpCallbackFuncName
+      attr_reader :jsonpCallbackFuncName
 
       # CGI 広告埋め込み対策のマーカーを追加するか？
       # @return [Boolean]
-      attr_accessor :addMarker
+      attr_reader :addMarker
       alias addMarker? addMarker
 
       # メッセージの内容が格納されている Hash の内容を利用して
@@ -24,28 +24,40 @@ module DodontoF
         # 仮引数の Hash を破壊しないように複製する
         messageData = hash.dup
 
-        message = self.new
-
-        message.jsonpCallbackFuncName = messageData['callback']
+        jsonpCallbackFuncName = messageData['callback']
         messageData.delete('callback')
 
-        message.addMarker = !Utils.nilOrEmptyString?(messageData['marker'])
+        addMarker = !Utils.nilOrEmptyString?(messageData['marker'])
         messageData.delete('marker')
 
-        message.commandName = messageData['webif']
+        commandName = messageData['webif']
         messageData.delete('webif')
 
-        # 残りはコマンドの引数
-        message.args = messageData
-
-        message
+        new(commandName,
+            messageData,
+            :callback => jsonpCallbackFuncName,
+            :addMarker => addMarker)
       end
 
-      def initialize
-        super
+      # コンストラクタ
+      # @param [String] commandName コマンド名
+      # @param [Hash] args コマンドの引数
+      # @param [Hash] options 省略可能なオプション
+      # @options options [String, nil] :callback
+      #   JSONP のコールバック関数名
+      # @options options [Boolean] :addMarker
+      #   CGI 広告埋め込み対策のマーカーを追加するか？
+      def initialize(commandName, args, options = {})
+        defaultOptions = {
+          :callback => nil,
+          :addMarker => false
+        }
+        mergedOptions = defaultOptions.merge(options)
 
-        @jsonpCallbackFuncName = nil
-        @addMarker = false
+        @commandName = commandName
+        @args = args
+        @jsonpCallbackFuncName = mergedOptions[:callback]
+        @addMarker = mergedOptions[:addMarker]
       end
 
       # JSONP を使うか？

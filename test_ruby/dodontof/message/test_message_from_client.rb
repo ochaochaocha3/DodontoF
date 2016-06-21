@@ -43,16 +43,20 @@ module DodontoF
       end
 
       def test_commandSpecified?
-        message = MessageFromClient.new
+        messageWithNilCommandName = MessageFromClient.new(nil, {})
+        assert_equal(false,
+                     messageWithNilCommandName.commandSpecified?,
+                     'nil -> false')
 
-        message.commandName = nil
-        assert_equal(false, message.commandSpecified?, 'nil -> false')
+        messageWithEmptyCommandName = MessageFromClient.new('', {})
+        assert_equal(false,
+                     messageWithEmptyCommandName.commandSpecified?,
+                     '空 -> false')
 
-        message.commandName = ''
-        assert_equal(false, message.commandSpecified?, '空 -> false')
-
-        message.commandName = 'getPlayRoomStates'
-        assert_equal(true, message.commandSpecified?, '指定 -> true')
+        messageWithCommandName = MessageFromClient.new('getPlayRoomStates', {})
+        assert_equal(true,
+                     messageWithCommandName.commandSpecified?,
+                     '指定 -> true')
       end
     end
   end
