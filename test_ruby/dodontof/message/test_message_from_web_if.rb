@@ -45,29 +45,43 @@ module DodontoF
       end
 
       def test_jsonp?
-        message = MessageFromWebIf.new
+        messageWithNilJsonpFuncName = MessageFromWebIf.new(
+          '', {}, :callback => nil
+        )
+        assert_equal(false,
+                     messageWithNilJsonpFuncName.jsonp?,
+                     'nil -> false')
 
-        message.jsonpCallbackFuncName = nil
-        assert_equal(false, message.jsonp?, 'nil -> false')
+        messageWithEmptyJsonpFuncName = MessageFromWebIf.new(
+          '', {}, :callback => ''
+        )
+        assert_equal(false,
+                     messageWithEmptyJsonpFuncName.jsonp?,
+                     '空 -> false')
 
-        message.jsonpCallbackFuncName = ''
-        assert_equal(false, message.jsonp?, '空 -> false')
-
-        message.jsonpCallbackFuncName = 'responseFunction'
-        assert_equal(true, message.jsonp?, '指定 -> true')
+        messageWithJsonpFuncName = MessageFromWebIf.new(
+          '', {}, :callback => 'responseFunction'
+        )
+        assert_equal(true,
+                     messageWithJsonpFuncName.jsonp?,
+                     '指定 -> true')
       end
 
       def test_commandSpecified?
-        message = MessageFromWebIf.new
+        messageWithNilCommandName = MessageFromWebIf.new(nil, {})
+        assert_equal(false,
+                     messageWithNilCommandName.commandSpecified?,
+                     'nil -> false')
 
-        message.commandName = nil
-        assert_equal(false, message.commandSpecified?, 'nil -> false')
+        messageWithEmptyCommandName = MessageFromWebIf.new('', {})
+        assert_equal(false,
+                     messageWithEmptyCommandName.commandSpecified?,
+                     '空 -> false')
 
-        message.commandName = ''
-        assert_equal(false, message.commandSpecified?, '空 -> false')
-
-        message.commandName = 'getBusyInfo'
-        assert_equal(true, message.commandSpecified?, '指定 -> true')
+        messageWithCommandName = MessageFromWebIf.new('getPlayRoomStates', {})
+        assert_equal(true,
+                     messageWithCommandName.commandSpecified?,
+                     '指定 -> true')
       end
     end
   end

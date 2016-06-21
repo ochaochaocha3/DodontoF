@@ -8,11 +8,11 @@ module DodontoF
     class AbstractMessage
       # コマンド名
       # @return [String, nil]
-      attr_accessor :commandName
+      attr_reader :commandName
 
       # コマンド引数のハッシュテーブル
       # @return [Hash]
-      attr_accessor :args
+      attr_reader :args
 
       # メッセージの内容が格納されている Hash の内容を利用して
       #    インスタンスを生成する
