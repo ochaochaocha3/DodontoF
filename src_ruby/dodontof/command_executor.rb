@@ -2,7 +2,7 @@
 
 require 'dodontof/msgpack_loader'
 
-require 'dodontof/http_response_element_set'
+require 'dodontof/rack_response_generator'
 require 'dodontof/response'
 require 'dodontof/message'
 require 'dodontof/command/client_commands/all'
@@ -14,25 +14,25 @@ module DodontoF
     module_function
 
     # HTTP リクエスト解析結果を元にコマンドの実行を試み、
-    #   HTTP レスポンスに必要な要素を得る
+    #   Rack::Response 生成器を得る
     # @param [HttpRequestParseResult] httpRequestParseResult
     #   HTTP リクエスト解析結果
     # @param [Class] serverClass サーバーのクラス
     # @param [Class] saveDirInfoClass セーブデータ情報のクラス
-    # @return [HttpResponseElementSet] HTTP レスポンスに必要な要素
+    # @return [RackResponseGenerator] Rack::Response 生成器
     def execute(httpRequestParseResult, serverClass, saveDirInfoClass)
+      httpMethod = httpRequestParseResult.httpMethod
+
       unless httpRequestParseResult.validHttpMethod?
-        return HttpResponseElementSet.withNilMessage(
-          httpRequestParseResult,
-          Response::InvalidHttpMethodResponse.new(
-            httpRequestParseResult.httpMethod
-          )
+        return RackResponseGenerator.withNilMessage(
+          httpMethod,
+          Response::InvalidHttpMethodResponse.new(httpMethod)
         )
       end
 
       if httpRequestParseResult.exception
-        return HttpResponseElementSet.withNilMessage(
-          httpRequestParseResult,
+        return RackResponseGenerator.withNilMessage(
+          httpMethod,
           Response::HttpRequestParseErrorResponse.new(
             httpRequestParseResult
           )
@@ -40,8 +40,8 @@ module DodontoF
       end
 
       if MsgpackLoader.failed?
-        return HttpResponseElementSet.withNilMessage(
-          httpRequestParseResult,
+        return RackResponseGenerator.withNilMessage(
+          httpMethod,
           Response::MessagePackLoadFailureResponse.instance
         )
       end
@@ -61,8 +61,8 @@ module DodontoF
       message = messageClass.fromHash(httpRequestParseResult.messageData)
       unless message.commandSpecified?
         # コマンドが指定されていないため中止する
-        return HttpResponseElementSet.new(
-          httpRequestParseResult,
+        return RackResponseGenerator.new(
+          httpMethod,
           message,
           responseModule::CommandNotSpecifiedResponse.new(
             serverClass::SERVER_TYPE
@@ -74,8 +74,8 @@ module DodontoF
       begin
         command = commandTable.fetch(message.commandName)
       rescue Command::CommandNotFoundError => e
-        return HttpResponseElementSet.new(
-          httpRequestParseResult,
+        return RackResponseGenerator.new(
+          httpMethod,
           message,
           Response::CommandNotFoundResponse.new(e)
         )
@@ -84,14 +84,14 @@ module DodontoF
       begin
         server = serverClass.new(saveDirInfoClass.new, message.args)
         result = command.execute(server, message.args)
-        return HttpResponseElementSet.new(
-          httpRequestParseResult,
+        return RackResponseGenerator.new(
+          httpMethod,
           message,
           Response::SuccessResponse.new(result)
         )
       rescue => e
-        return HttpResponseElementSet.new(
-          httpRequestParseResult,
+        return RackResponseGenerator.new(
+          httpMethod,
           message,
           Response::FailureResponse.new(e)
         )
