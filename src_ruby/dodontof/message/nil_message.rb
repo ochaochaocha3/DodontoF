@@ -19,12 +19,6 @@ module DodontoF
         super
       end
 
-      # CGI 広告埋め込み対策のマーカーを追加するか？
-      # @return [false]
-      def addMarker?
-        false
-      end
-
       # JSONP を使うか？
       # @return [false]
       def jsonp?
