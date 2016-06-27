@@ -33,13 +33,6 @@ module DodontoF
         !Utils.nilOrEmptyString?(@commandName)
       end
 
-      # CGI 広告埋め込み対策のマーカーを追加するか？
-      # @abstract
-      def addMarker?
-        raise NotImplementedError,
-          'method addMarker? must be overridden'
-      end
-
       # JSONP を使うか？
       # @abstract
       def jsonp?

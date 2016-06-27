@@ -29,10 +29,6 @@ module DodontoF
         assert_equal(false, @message.jsonp?)
       end
 
-      def test_addMarkerShouldReturnFalse
-        assert_equal(false, @message.addMarker?)
-      end
-
       def test_commandName
         assert_equal(@messageData['cmd'], @message.commandName)
         assert_equal(false, @message.args.has_key?('cmd'))

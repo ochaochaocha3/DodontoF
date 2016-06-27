@@ -11,11 +11,6 @@ module DodontoF
       # @return [String, nil]
       attr_reader :jsonpCallbackFuncName
 
-      # CGI 広告埋め込み対策のマーカーを追加するか？
-      # @return [Boolean]
-      attr_reader :addMarker
-      alias addMarker? addMarker
-
       # メッセージの内容が格納されている Hash の内容を利用して
       # インスタンスを生成する
       # @param [Hash] hash Web インターフェース経由のメッセージのデータ
@@ -27,16 +22,12 @@ module DodontoF
         jsonpCallbackFuncName = messageData['callback']
         messageData.delete('callback')
 
-        addMarker = !Utils.nilOrEmptyString?(messageData['marker'])
-        messageData.delete('marker')
-
         commandName = messageData['webif']
         messageData.delete('webif')
 
         new(commandName,
             messageData,
-            :callback => jsonpCallbackFuncName,
-            :addMarker => addMarker)
+            :callback => jsonpCallbackFuncName)
       end
 
       # コンストラクタ
@@ -45,8 +36,6 @@ module DodontoF
       # @param [Hash] options 省略可能なオプション
       # @options options [String, nil] :callback
       #   JSONP のコールバック関数名
-      # @options options [Boolean] :addMarker
-      #   CGI 広告埋め込み対策のマーカーを追加するか？
       def initialize(commandName, args, options = {})
         defaultOptions = {
           :callback => nil,
@@ -57,7 +46,6 @@ module DodontoF
         @commandName = commandName
         @args = args
         @jsonpCallbackFuncName = mergedOptions[:callback]
-        @addMarker = mergedOptions[:addMarker]
       end
 
       # JSONP を使うか？

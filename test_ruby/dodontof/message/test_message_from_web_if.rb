@@ -18,8 +18,7 @@ module DodontoF
         }
         @messageData = {
           'webif' => 'getRoomList',
-          'callback' => 'responseFunction',
-          'marker' => 'true'
+          'callback' => 'responseFunction'
         }.merge(@args)
 
         @message = MessageFromWebIf.fromHash(@messageData)
@@ -28,11 +27,6 @@ module DodontoF
       def test_jsonpCallbackFuncName
         assert_equal(@messageData['callback'], @message.jsonpCallbackFuncName)
         assert_equal(false, @message.args.has_key?('callback'))
-      end
-
-      def test_addMarker?
-        assert_equal(true, @message.addMarker?)
-        assert_equal(false, @message.args.has_key?('marker'))
       end
 
       def test_commandName

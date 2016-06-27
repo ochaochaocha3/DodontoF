@@ -19,10 +19,6 @@ module DodontoF
         assert_equal(false, @message.jsonp?)
       end
 
-      def test_addMarkerShouldReturnFalse
-        assert_equal(false, @message.addMarker?)
-      end
-
       def test_commandNameShouldBeEmpty
         assert_equal(true, @message.commandName.empty?)
       end
