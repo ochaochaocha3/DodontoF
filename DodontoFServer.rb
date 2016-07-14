@@ -170,6 +170,7 @@ class DodontoFServer
 
   attr_accessor :lastUpdateTimes
   attr_accessor :isGetOwnRecord
+  attr_reader :saveFiles
 
   def initialize(saveDirInfo, cgiParams)
     @cgiParams = cgiParams
