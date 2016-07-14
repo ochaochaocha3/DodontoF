@@ -95,7 +95,7 @@ module DodontoF
 
       # サーバからログアウトするコマンド
       # @param [Hash] args コマンドの引数
-      # @return [Hash] 空の Hash
+      # @return [void]
       defineProcCommand('logout') do |server, args|
         logger = server.logger
 

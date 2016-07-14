@@ -9,7 +9,7 @@ module DodontoF
       # チャット発言コマンド
       # @param [Object] server どどんとふサーバー
       # @param [Hash] args コマンドの引数
-      # @return [Hash] 空の Hash
+      # @return [void]
       defineProcCommand('sendChatMessage') do |server, args|
         chatData = args[KEY_PARAMS]
         server.logger.debug(chatData, 'chatData')
