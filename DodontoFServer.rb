@@ -161,6 +161,13 @@ class DodontoFServer
     return messagePack
   end
 
+  # ロガー
+  # @return [DodontoF::Logger]
+  attr_reader :logger
+  # セーブデータディレクトリ情報
+  # @return [SaveDirInfo]
+  attr_reader :saveDirInfo
+
   def initialize(saveDirInfo, cgiParams)
     @cgiParams = cgiParams
     @saveDirInfo = saveDirInfo

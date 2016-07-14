@@ -98,31 +98,6 @@ class DodontoFServerTest < Test::Unit::TestCase
     assert_equal(false, playRoomNames.include?('TESTROOM_BETA'))
   end
 
-  # 'checkRoomStatus' => :hasReturn,
-  def test_checkRoomStatus
-    params = {
-      'cmd' => 'checkRoomStatus',
-      'params' => {
-        'roomNumber' => 1
-      }
-    }
-
-    server = getDodontoFServerForTest.new(SaveDirInfo.new, params)
-    result = server.getResponse
-    parsed = JsonParser.parse(result)
-
-    assert_have_keys(parsed,
-                     'isRoomExist',
-                     'roomName',
-                     'roomNumber',
-                     'chatChannelNames',
-                     'canUseExternalImage',
-                     'canVisit',
-                     'isPasswordLocked',
-                     'isMentenanceModeOn',
-                     'isWelcomeMessageOn')
-  end
-
   # 'changePlayRoom' => :hasReturn,
   def test_changePlayRoom
     params = {
@@ -522,97 +497,5 @@ class DodontoFServerTest < Test::Unit::TestCase
     tags = callGetImageTagsAndImageList
     assert_equal('TEST_TAG_CHANGED', tags['tagInfos'][image_path]['tagInfo'],
                  'タグが書き換えられてるよね？')
-  end
-
-
-  # ------------------------ システム系コマンドテスト
-
-  # 'getLoginInfo' => :hasReturn
-  def test_getLoginInfo
-    params = {
-      'cmd' => 'getLoginInfo',
-      'params' => { }
-    }
-
-    server = getDodontoFServerForTest.new(SaveDirInfo.new, params)
-    result = server.getResponse
-    parsed = JsonParser.parse(result)
-
-    assert_have_keys(
-      parsed,
-      'loginMessage',
-      'cardInfos',
-      'isDiceBotOn',
-      'uniqueId',
-      'refreshTimeout',
-      'refreshInterval',
-      'isCommet',
-      'version',
-      'playRoomMaxNumber',
-      'warning',
-      'playRoomGetRangeMax',
-      'allLoginCount',
-      'limitLoginCount',
-      'loginUserCountList',
-      'maxLoginCount',
-      'skinImage',
-      'isPaformanceMonitor',
-      'fps',
-      'loginTimeLimitSecond',
-      'removeOldPlayRoomLimitDays',
-      'canTalk',
-      'retryCountLimit',
-      'imageUploadDirInfo',
-      'mapMaxWidth',
-      'mapMaxHeigth',
-      'diceBotInfos',
-      'isNeedCreatePassword',
-      'defaultUserNames',
-      'drawLineCountLimit',
-      'logoutUrl',
-      'languages',
-      'canUseExternalImageModeOn',
-      'characterInfoToolTipMax',
-      'isAskRemoveRoomWhenLogout'
-    )
-
-    assert_equal(nil, parsed['warning'])
-  end
-
-  def test_getLoginInfoMentenanceWarning
-    backup = $isMentenanceNow
-
-    params = {
-      'cmd' => 'getLoginInfo',
-      'params' => { }
-    }
-
-    $isMentenanceNow = true
-    server = getDodontoFServerForTest.new(SaveDirInfo.new, params)
-    result = server.getResponse
-    parsed = JsonParser.parse(result)
-    assert_have_keys(parsed['warning'], 'key')
-    assert_equal('canNotLoginBecauseMentenanceNow', parsed['warning']['key'])
-  ensure
-    $isMentenanceNow = backup
-  end
-
-  def test_getLoginInfoNoSmallImageDirWarning
-    params = {
-      'cmd' => 'getLoginInfo',
-      'params' => { }
-    }
-
-    info = SaveDirInfo.new
-    server = getDodontoFServerForTest.new(info, params)
-    image = DodontoF::Image.new(server, info)
-    target = image.getSmallImageDir
-    FileUtils.rm_r(target)
-
-    result = server.getResponse
-    parsed = JsonParser.parse(result)
-    assert_have_keys(parsed['warning'], 'key', 'params')
-    assert_equal('noSmallImageDir', parsed['warning']['key'])
-    assert_equal([target], parsed['warning']['params'], '配列に必要なディレクトリが返ってくる')
   end
 end
