@@ -9,7 +9,7 @@ class OneWayHeroics < DiceBot
   
   
   def prefixs
-    ['JD.*'] + @@tables.keys
+    ['\d*JD.*'] + @@tables.keys
   end
   
   def gameName
@@ -22,10 +22,12 @@ class OneWayHeroics < DiceBot
   
   def getHelpMessage
     return <<MESSAGETEXT
-・判定　JDx+y,z
-　x:能力値、y:修正値（省略可。「＋」のみなら＋１）、z:目標値、
+・判定　aJDx+y,z
+　a:ダイス数（省略時2個)、x:能力値、
+　y:修正値（省略可。「＋」のみなら＋１）、z:目標値（省略可）
 　例１）JD2+1,8 or JD2+,8　：能力値２、修正＋１、目標値８
 　例２）JD3,10 能力値３、修正なし、目標値10
+　例３）3JD4+ ダイス3個から2個選択、能力値４、修正なし、目標値なし
 ・ファンブル表 FT
 ・魔王追撃表   DC
 ・進行ルート表 PR
@@ -63,31 +65,58 @@ MESSAGETEXT
   
   
   def judgeDice(command)
-    return nil unless /^JD(\d*)(\+(\d*))?,(\d+)$/ === command
+    return nil unless /^(\d*)JD(\d*)(\+(\d*))?(,(\d+))?$/ === command
     
-    ability = $1.to_i
-    target = $4.to_i
+    diceCount = $1
+    diceCount = 2 if diceCount.empty?
+    diceCount = diceCount.to_i
+    return nil if diceCount < 2
     
-    modifyText = ($2 || "")
+    ability = $2.to_i
+    target = $6
+    target = target.to_i unless target.nil?
+    
+    modifyText = ($3 || "")
     modifyText = "+1" if modifyText == "+" 
     modifyValue = modifyText.to_i
     
-    dice, diceText, = roll(2, 6)
+    dice, diceText = rollJudgeDice(diceCount)
     total = dice + ability + modifyValue
     
     text = "#{command}"
-    text += " ＞ 2D6[#{diceText}]+#{ability}#{modifyText}"
+    text += " ＞ #{diceCount}D6[#{diceText}]+#{ability}#{modifyText}"
     text += " ＞ #{total}"
     
     result = getJudgeReusltText(dice, total, target)
-    text += " ＞ #{result}"
+    text += " ＞ #{result}" unless result.empty?
     
     return text
   end
   
+  def rollJudgeDice(diceCount)
+    dice, diceText, = roll(diceCount, 6)
+    
+    if( diceCount == 2 )
+      return dice, diceText
+    end
+    
+    diceList = getDiceListFromDiceText(diceText)
+    diceList.sort!
+    diceList.reverse!
+    
+    total = diceList[0] + diceList[1]
+    text = "#{diceText}→#{diceList[0]},#{diceList[1]}"
+    
+    return total, text
+  end
+  
   def getJudgeReusltText(dice, total, target)
     return "ファンブル" if dice == 2
-    return "クリティカル" if dice == 12
+    return "スペシャル" if dice == 12
+    
+    debug("target", target)
+    
+    return "" if target.nil?
     
     return "成功" if total >= target
     return "失敗"
@@ -103,11 +132,11 @@ MESSAGETEXT
   end
       
   
-  def getLossGoldText(diceCount, times)
+  def getGoldText(diceCount, times, doSomething)
     total, diceText = roll(diceCount, 6)
     gold = total * times
     
-    return " ＞ #{diceCount}D6[#{diceText}]×#{times} ＞ 【所持金】 #{gold} を失う"
+    return " ＞ #{diceCount}D6[#{diceText}]×#{times} ＞ 【所持金】 #{gold} を#{doSomething}"
   end
   
   def getDownText(name, diceCount)
@@ -126,8 +155,8 @@ MESSAGETEXT
       [
        [1, "装備以外のアイテムのうちプレイヤー指定の１つを失う"],
        [2, "装備のうちプレイヤー指定の１つを失う"],
-       [3, "１Ｄ６に１００を掛け、それだけの【所持金】を失う", 'getLossGoldText(1, 100)'],
-       [4, "１Ｄ６に１００を掛け、それだけの【所持金】を拾う", 'getLossGoldText(1, 100)'],
+       [3, "１Ｄ６に１００を掛け、それだけの【所持金】を失う", 'getGoldText(1, 100, "失う")'],
+       [4, "１Ｄ６に１００を掛け、それだけの【所持金】を拾う", 'getGoldText(1, 100, "拾う")'],
        [5, "【経験値】２を獲得する"],
        [6, "【経験値】４を獲得する"],
       ],},
@@ -138,7 +167,7 @@ MESSAGETEXT
       :table => 
       [[1, "装備以外のアイテムのうちＧＭ指定の１つを失う"],
        [2, "装備のうちＧＭ指定の１つを失う"],
-       [3, "２Ｄ６に１００を掛け、それだけの【所持金】を失う", 'getLossGoldText(2, 100)'],
+       [3, "２Ｄ６に１００を掛け、それだけの【所持金】を失う", 'getGoldText(2, 100, "失う")'],
        [4, "【ＬＩＦＥ】が１Ｄ６減少する", 'getDownText("【ＬＩＦＥ】", 1)'],
        [5, "【ＳＴ】が１Ｄ６減少する", 'getDownText("【ＳＴ】", 1)'],
        [6, "【ＬＩＦＥ】が２Ｄ６減少する", 'getDownText("【ＬＩＦＥ】", 2)'],
