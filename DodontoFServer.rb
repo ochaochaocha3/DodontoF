@@ -168,6 +168,9 @@ class DodontoFServer
   # @return [SaveDirInfo]
   attr_reader :saveDirInfo
 
+  attr_accessor :lastUpdateTimes
+  attr_accessor :isGetOwnRecord
+
   def initialize(saveDirInfo, cgiParams)
     @cgiParams = cgiParams
     @saveDirInfo = saveDirInfo
@@ -666,6 +669,14 @@ class DodontoFServer
     
     @logger.debug(@commandSender, "@commandSender")
     
+    return @commandSender
+  end
+
+  def getCommandSenderFromArgs(args)
+    @commandSender ||= args['own']
+
+    @logger.debug(@commandSender, "@commandSender")
+
     return @commandSender
   end
   
