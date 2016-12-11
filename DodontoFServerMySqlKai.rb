@@ -49,26 +49,13 @@ if( $isFirstCgi )
   require 'cgiPatch_forFirstCgi'
 end
 
-# require "configMysqlKai.rb"
-require "config.rb"
-
-begin
-  require "config_local.rb"
-rescue Exception
-end
-
-if $isTestMode
-  require "config_test.rb"
-end
-
+require 'dodontof/config_loader'
+DodontoF::ConfigLoader.load!
 
 require "FileLock.rb"
 require "saveDirInfoMysql.rb"
 
 require 'dodontof/msgpack_loader'
-
-
-$saveFileNames = File.join($saveDataTempDir, 'saveFileNames.json');
 
 $tableNames = {
   'chatMessageDataLog' => 'chats',
@@ -2294,7 +2281,7 @@ SQL_TEXT
       'characterInfoToolTipMax' => [$characterInfoToolTipMaxWidth, $characterInfoToolTipMaxHeight],
       'isAskRemoveRoomWhenLogout' => $isAskRemoveRoomWhenLogout,
       'wordChecker' => $wordChecker,
-      'errorMessage' => $globalErrorMessage,
+      'errorMessage' => DodontoF::ConfigLoader.errorMessage,
     }
     
     @logger.debug(result, "result")

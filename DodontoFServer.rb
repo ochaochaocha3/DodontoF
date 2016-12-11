@@ -40,45 +40,17 @@ require 'dodontof/dice_adapter'
 require 'dodontof/play_room'
 require 'dodontof/image'
 
+require 'dodontof/config_loader'
+DodontoF::ConfigLoader.load!
+
 if( $isFirstCgi )
   require 'cgiPatch_forFirstCgi'
-end
-
-require "config"
-
-$globalErrorMessage = nil
-
-begin
-  require "config_local"
-rescue LoadError
-  # NO config_local.rb is NOT error.
-rescue Exception => e
-  $globalErrorMessage ||= ''
-  $globalErrorMessage << "config_local.rb has Error !\n\n"
-  $globalErrorMessage << e.to_s
-  
-  unless $!.nil?
-    $globalErrorMessage << 'exception from : ' << $!.backtrace.join("\n")
-    $globalErrorMessage << '$!.inspect : ' << $!.inspect
-  end
-end
-
-if $isTestMode
-  require "config_test"
-end
-
-
-if( $loginCountFileFullPath.nil? )
-  $loginCountFileFullPath = File.join($SAVE_DATA_DIR, 'saveData', $loginCountFile)
 end
 
 require "FileLock"
 require "saveDirInfo"
 
 require 'dodontof/msgpack_loader'
-
-
-$saveFileNames = File.join($saveDataTempDir, 'saveFileNames.json');
 
 $chatMessageDataLogAll = 'chatLongLines.txt'
 
@@ -2100,7 +2072,7 @@ class DodontoFServer
       'isAskRemoveRoomWhenLogout' => $isAskRemoveRoomWhenLogout,
       'canUploadImageOnPublic' => $canUploadImageOnPublic,
       'wordChecker' => $wordChecker,
-      'errorMessage' => $globalErrorMessage,
+      'errorMessage' => DodontoF::ConfigLoader.errorMessage,
     }
     
     @logger.debug(result, "result")
