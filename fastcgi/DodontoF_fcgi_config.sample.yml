@@ -1,0 +1,48 @@
+# どどんとふ FastCGI 環境設定
+
+# どどんとふのルートディレクトリ
+#
+# DodontoFServer.rb が存在するディレクトリを指定します。
+# 動作時はカレントディレクトリをこのディレクトリに設定します。
+DodontoFDir: /var/www/html
+
+# 設定再読み込みのトリガーとなるファイルのパス
+#
+# 再起動なしでの設定再読み込みを行いたい場合は、下記の
+# IntervalForWatchingReloadConfigFile を設定した上で
+# 指定したファイルを touch してください。
+ReloadConfigFile: /var/www/DodontoF_fcgi/reload_config.txt
+
+# 設定再読み込みのトリガーとなるファイルの監視間隔（秒）
+#
+# 指定すると、ReloadConfigFile で指定したファイルの最終更新日時を調べます。
+# 負荷削減のため、前回の調査から指定した秒数以上経過していた場合のみ
+# 調査を行います。
+# 調べた最終更新日時が前回の設定読み込みよりも後だった場合
+# 設定を再読み込みします。
+#
+# null を設定すると、設定の再読み込みを行いません。
+IntervalForWatchingReloadConfigFile: 30
+
+# FastCGI ログファイルのパス
+#
+# どどんとふ本体のログとは別に作成されます。
+# null を設定すると作成されません。
+LogFile: /var/www/DodontoF_fcgi/DodontoF_fcgi.log
+
+# ログファイルの保持数か切り替え頻度
+#
+# ログファイルの保持数：整数を指定します。
+# 切り替え頻度：daily, weekly, monthly のいずれかを指定します。
+LogShiftAge: 1
+
+# ログファイルを切り替えるバイト数
+#
+# LogShiftAge で保持数を指定した場合のみ有効です。
+# 1048576 = 10 MiB
+LogShiftSize: 1048576
+
+# ログレベル
+#
+# debug, info, warn, error, fatal, unknown のいずれかを指定します。
+LogLevel: warn
