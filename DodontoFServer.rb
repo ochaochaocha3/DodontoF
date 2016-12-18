@@ -43,10 +43,6 @@ require 'dodontof/image'
 require 'dodontof/config_loader'
 DodontoF::ConfigLoader.load!
 
-if( $isFirstCgi )
-  require 'cgiPatch_forFirstCgi'
-end
-
 require "FileLock"
 require "saveDirInfo"
 
