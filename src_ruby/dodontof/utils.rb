@@ -9,14 +9,24 @@ require 'dodontof/logger'
 
 module DodontoF
   # ユーティリティメソッドを格納するモジュール
+  #
+  # ユーティリティメソッドはモジュール関数として提供される。
   module Utils
+    module_function
+
+    # nil または空文字列かどうかを返す
+    # @param [String, nil] obj オブジェクト
+    # @return [Boolean]
+    def nilOrEmptyString?(obj)
+      obj.nil? || obj.empty?
+    end
+
     # オブジェクトを JSON で表現した文字列を返す
     # @param [Object] obj JSON に変換するオブジェクト
     # @return [String]
     def getJsonString(obj)
       JsonBuilder.build(obj)
     end
-    module_function :getJsonString
 
     # JSON 文字列からオブジェクトに変換する
     # @param [String] jsonString JSON 文字列
@@ -44,7 +54,6 @@ module DodontoF
         return {}
       end
     end
-    module_function :getObjectFromJsonString
 
     # ディレクトリが作成された状態にする
     # この時なければパーミッションが0777の状態で作る
@@ -66,7 +75,6 @@ module DodontoF
       Dir::mkdir(dir)
       File.chmod(0777, dir)
     end
-    module_function :makeDir
 
     # ディレクトリを削除します
     def rmdir(dirName)
@@ -88,14 +96,12 @@ module DodontoF
 
       Dir.delete(dirName)
     end
-    module_function :rmdir
 
     # 指定されたキー値(文字列)に翻訳のための
     # 置換キーであることを示すラッピングを施して返します
     def getLanguageKey(key)
       '###Language:' + key + '###'
     end
-    module_function :getLanguageKey
 
     # 指定の文字列(パスワード)をソルトを用いてエンコードして返す
     # 生の状態でパスワードを保存するのを避けるための措置
@@ -105,7 +111,6 @@ module DodontoF
       salt = [rand(64),rand(64)].pack("C*").tr("\x00-\x3f","A-Za-z0-9./")
       return pass.crypt(salt)
     end
-    module_function :getChangedPassword
 
     # 生パスワード(password)と
     # ソルトによりエンコードされたパスワード(changedPassword)が
@@ -116,6 +121,5 @@ module DodontoF
       return false if( password.nil? )
       ( password.crypt(changedPassword) == changedPassword )
     end
-    module_function :isPasswordMatch?
   end
 end

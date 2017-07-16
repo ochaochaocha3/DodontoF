@@ -5,14 +5,34 @@ $LOAD_PATH.unshift(File.expand_path('..', File.dirname(__FILE__)))
 require 'test_helper'
 
 require 'test/unit'
+require 'fileutils'
 
 require 'dodontof/utils'
-
-require 'fileutils'
 
 module DodontoF
   # ユーティリティメソッドのテスト
   class UtilsTest < Test::Unit::TestCase
+    def teardown
+      # 一時ディレクトリを消去する
+      FileUtils.rm_rf('./.temp')
+    end
+
+    # nilOrEmptyString? は nil を渡されたとき true を返す
+    def test_nilOrEmptyStringShouldReturnTrueIfPassedNil
+      assert_equal(true, Utils.nilOrEmptyString?(nil))
+    end
+
+    # nilOrEmptyString? は空文字列を渡されたとき true を返す
+    def test_nilOrEmptyStringShouldReturnTrueIfPassedEmptyString
+      assert_equal(true, Utils.nilOrEmptyString?(''))
+    end
+
+    # nilOrEmptyString? は空でない文字列を渡されたとき false を返す
+    def test_nilOrEmptyStringShouldReturnFalseIfPassedStringNotEmpty
+      assert_equal(false, Utils.nilOrEmptyString?('A'))
+      assert_equal(false, Utils.nilOrEmptyString?('String'))
+    end
+
     # getJsonString は JSON 文字列を返す
     def test_getJsonStringShouldReturnJsonString
       assert_equal('[1,2,3]',
