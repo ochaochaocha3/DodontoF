@@ -1,0 +1,3 @@
+[submodule "src_ruby/rack"]
+	path = src_ruby/rack
+	url = https://github.com/rack/rack.git
