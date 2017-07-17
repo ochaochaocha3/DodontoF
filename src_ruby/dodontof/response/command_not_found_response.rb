@@ -4,15 +4,21 @@ module DodontoF
   module Response
     # コマンドが見つからなかった場合の応答のクラス
     class CommandNotFoundResponse
+      # 例外クラス名
+      #
+      # 実際にはクラスを使用していないので文字列を用意しておく。
+      # @return [String]
+      EXCEPTION_CLASS_STRING = 'DodontoF::Command::CommandNotFoundError'
+
       # 応答の本体
       # @return [Hash]
       attr_reader :body
 
       # コンストラクタ
-      def initialize(exception)
+      def initialize(commandName)
         @body = {
-          'result' => %Q(Command "#{exception.commandName}" is not found.),
-          'exceptionClass' => exception.class.to_s
+          'result' => %Q(Command "#{commandName}" is not found.),
+          'exceptionClass' => EXCEPTION_CLASS_STRING
         }
       end
 

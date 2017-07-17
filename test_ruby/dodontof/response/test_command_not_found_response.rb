@@ -22,8 +22,7 @@ module DodontoF
 
       def setup
         @commandName = 'invalidCommand'
-        @exception = MockCommandNotFoundError.new(@commandName)
-        @response = CommandNotFoundResponse.new(@exception)
+        @response = CommandNotFoundResponse.new(@commandName)
       end
 
       # HTTP ステータスコードが正しい
@@ -36,7 +35,7 @@ module DodontoF
       def test_bodyShouldContainCorrectData
         expectedData = {
           'result' => %Q(Command "#{@commandName}" is not found.),
-          'exceptionClass' => @exception.class.to_s
+          'exceptionClass' => 'DodontoF::Command::CommandNotFoundError'
         }
         assert_equal(expectedData, @response.body)
       end
