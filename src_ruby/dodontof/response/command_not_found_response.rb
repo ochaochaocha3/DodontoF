@@ -8,7 +8,7 @@ module DodontoF
       #
       # 実際にはクラスを使用していないので文字列を用意しておく。
       # @return [String]
-      EXCEPTION_CLASS_STRING = 'DodontoF::Command::CommandNotFoundError'
+      EXCEPTION_CLASS_STRING = 'DodontoF::Command::CommandNotFoundError'.freeze
 
       # 応答の本体
       # @return [Hash]

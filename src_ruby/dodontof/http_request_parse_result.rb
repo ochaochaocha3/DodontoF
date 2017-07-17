@@ -6,7 +6,7 @@ module DodontoF
   # HTTP リクエストの解析結果を表すクラス
   class HttpRequestParseResult
     # MessagePack の MIME タイプ
-    MESSAGE_PACK_MIME_TYPE = 'application/x-msgpack'
+    MESSAGE_PACK_MIME_TYPE = 'application/x-msgpack'.freeze
 
     # HTTP メソッド
     # @return [String]
